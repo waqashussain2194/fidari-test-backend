@@ -6,6 +6,9 @@ import { APP_PIPE } from '@nestjs/core';
 import { AdminModule } from './admin/admin.module';
 import { CustomerModule } from './customer/customer.module';
 import { JwtModule } from '@nestjs/jwt';
+import { PizzaModule } from './pizza/pizza.module';
+import { ToppingModule } from './topping/topping.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -15,7 +18,10 @@ import { JwtModule } from '@nestjs/jwt';
     AuthModule,
     PrismaModule,
     AdminModule,
-    CustomerModule
+    CustomerModule,
+    PizzaModule,
+    ToppingModule,
+    CartModule
   ],
   providers: [
     {

@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -14,13 +11,35 @@ generator client {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
   name      String?
   password  String
-  role      Role     @default(CUSTOMER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  role      Role      @default(CUSTOMER)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  cartItems CartItem[]
+}
+
+model Topping {
+  id     Int      @id @default(autoincrement())
+  name   String   @unique
+  pizzas Pizza[]  @relation("PizzaToppings")
+}
+
+model Pizza {
+  id        Int       @id @default(autoincrement())
+  name      String
+  toppings  Topping[] @relation("PizzaToppings")
+  cartItems CartItem[]
+}
+
+model CartItem {
+  id      Int     @id @default(autoincrement())
+  userId  Int
+  pizzaId Int
+  user    User    @relation(fields: [userId], references: [id])
+  pizza   Pizza   @relation(fields: [pizzaId], references: [id])
 }
 
 enum Role {
