@@ -9,6 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PizzaModule } from './pizza/pizza.module';
 import { ToppingModule } from './topping/topping.module';
 import { CartModule } from './cart/cart.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { CartModule } from './cart/cart.module';
     CustomerModule,
     PizzaModule,
     ToppingModule,
-    CartModule
+    CartModule,
+    OrderModule
   ],
   providers: [
     {

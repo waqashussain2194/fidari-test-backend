@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { LocalAuthGuard } from '../auth/guards/local-auth.guard';
 import { AdminSignupDto } from './dto/admin-signup.dto';
@@ -39,5 +39,14 @@ export class AdminController {
   @Post('create-customer')
   async createCustomer(@Body() createCustomerDto: CreateCustomerDto) {
     return this.customerService.createCustomer(createCustomerDto);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Customer creation successful.' })
+  @Get('customers/all')
+  async getAllCustomers() {
+    return this.customerService.getAllCustomers();
   }
 }

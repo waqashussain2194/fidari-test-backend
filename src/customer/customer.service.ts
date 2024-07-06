@@ -60,4 +60,12 @@ export class CustomerService {
       data: { password: hashedNewPassword },
     });
   }
+
+  async getAllCustomers(): Promise<User[]> {
+    return this.prisma.user.findMany({
+      where: {
+        role: Role.CUSTOMER
+      }
+    })
+  }
 }

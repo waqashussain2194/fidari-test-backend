@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Body, UseGuards, Req } from '@nestjs/common';
 import { PizzaService } from './pizza.service';
 import { CreatePizzaDto } from './dto/create-pizza.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -15,8 +15,9 @@ export class PizzaController {
   @Roles(Role.CUSTOMER)
   @ApiBearerAuth()
   @Post()
-  async createPizza(@Body() createPizzaDto: CreatePizzaDto) {
-    return this.pizzaService.createPizza(createPizzaDto);
+  async createPizza(@Req() req: any, @Body() createPizzaDto: CreatePizzaDto) {
+    const userId = req.user['id'];
+    return this.pizzaService.createPizza(userId, createPizzaDto);
   }
 
   @Get()

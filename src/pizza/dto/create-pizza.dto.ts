@@ -7,12 +7,11 @@ export class CreatePizzaDto {
   name: string;
 
   @ApiProperty({
-    example: ['Cheese', 'Pepperoni', 'Mushrooms'],
+    example: [1, 2, 3],
     description: 'List of toppings for the pizza',
     isArray: true,
   })
   @IsArray()
   @ArrayNotEmpty()
-  @IsString({ each: true })
-  toppings: string[];
+  toppings: number[];
 }

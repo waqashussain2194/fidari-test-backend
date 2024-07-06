@@ -6,23 +6,43 @@ import { CreatePizzaDto } from './dto/create-pizza.dto';
 export class PizzaService {
   constructor(private prisma: PrismaService) { }
 
-  async createPizza(data: CreatePizzaDto) {
-    const toppings = await this.prisma.topping.findMany({
-      where: { name: { in: data.toppings } },
-    });
-
-    if (!toppings || toppings.length !== data.toppings.length) {
-      throw new HttpException('Toppings not found', HttpStatus.NOT_FOUND);
-    }
-
-    return this.prisma.pizza.create({
-      data: {
-        name: data.name,
-        toppings: {
-          connect: toppings.map((topping) => ({ id: topping.id })),
+  async createPizza(userId: number, data: CreatePizzaDto) {
+    try {
+      const toppings = await this.prisma.topping.findMany({
+        where: { id: { in: data.toppings } },
+      });
+  
+      if (!toppings || toppings.length !== data.toppings.length) {
+        throw new HttpException('Toppings not found', HttpStatus.NOT_FOUND);
+      }
+  
+      const pizza = await this.prisma.pizza.create({
+        data: {
+          name: data.name,
+          toppings: {
+            connect: toppings.map((topping) => ({ id: topping.id })),
+          },
         },
-      },
-    });
+      });
+  
+      await this.prisma.cartItem.create({
+        data: {
+          userId,
+          pizzaId: pizza.id,
+        },
+      });
+  
+      return pizza;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error; // Re-throw known HTTP exceptions
+      }
+      console.error('Error creating pizza:', error);
+      throw new HttpException(
+        'An error occurred while creating the pizza',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async getAllPizzas() {
